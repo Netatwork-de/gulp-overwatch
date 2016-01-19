@@ -20,7 +20,7 @@ Setup a gulp task `overwatch` using this code:
 
 ```js
 var gulp = require('gulp');
-var overwatch = require('gulp-overwatch');```
+var overwatch = require('gulp-overwatch');
 
 gulp.task('_overwatch', function() {
 	return overwatch.watchProjects();

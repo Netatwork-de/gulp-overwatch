@@ -1,4 +1,4 @@
-gulp-jspm-local
+gulp-overwatch
 ===
 [![NPM version][npm-image]][npm-url]
 

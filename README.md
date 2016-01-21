@@ -19,18 +19,15 @@ Setup a gulp task `overwatch` using this code:
 ```js
 var gulp = require('gulp');
 var overwatch = require('gulp-overwatch');
+var browserSync = require('browser-sync');
 
 gulp.task('_overwatch', function() {
-	return overwatch.watchProjects();
+	return overwatch.watchProjects(browserSync.reload);
 });
 
 gulp.task('overwatch', ['_overwatch', 'watch']);
 ```
 
-To cause a recompile of your main project, add this line to your existing watch target:
-```js
-gulp.watch('jspm_packages/local/**/*', ['build',browserSync.reload ]).on('change', reportChange);
-```
 
 ## License
 

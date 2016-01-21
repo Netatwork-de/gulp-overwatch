@@ -38,7 +38,7 @@ async function getPackageObjectAsync(repo) {
 	}
 }
 
-async function watchProject(path) {
+async function watchProject(path, reload) {
     let packageName = path.substring(0, path.indexOf('@'));
     gutil.log("Starting watch for package", gutil.colors.yellow(packageName));
 
@@ -59,19 +59,24 @@ async function watchProject(path) {
 				executeGulp(projectPath, ["watch"]);
         projectPath += '/' + project.directories.lib;
     }
-    else
-		{
+    else {
         gutil.log("\tNo lib path found. Loading from root.");
     }
-
-		projectPath = pathUtil.resolve(projectPath);
-		chokidar
-			.watch(`${projectPath}/**/*`, {persistent: true, awaitWriteFinish: true, ignoreInitial: true})
-			.on('all', (event, path) =>
-				{
-					gutil.log("Dependent packages changed. Updating dependencies.");
-					jspmLocal.updateLocalDependencies();
-  			});
+	projectPath = pathUtil.resolve(projectPath);
+	chokidar
+		.watch(`${projectPath}/**/*`, {persistent: true, awaitWriteFinish: true, ignoreInitial: true})
+		.on('all', async (event, path) =>
+			{
+				gutil.log("Dependent packages changed. Updating dependencies.");
+				await jspmLocal.updateLocalDependencies([packageName]);
+				try {
+				gutil.log(gutil.colors.yellow("Reloading browser..."))
+				reload();
+				gutil.log(gutil.colors.yellow("Reloading browser finished..."))
+			}catch (e) {
+				gutil.log(e);
+			}
+			});
 	}
 
 	function executeGulp(packagePath, tasks) {
@@ -83,7 +88,7 @@ async function watchProject(path) {
 	  } else {
 	    process.env.PATH += ':' + gulpPath;
 	  }
-		gutil.log(`Processing ${packagePath}`);
+	  gutil.log(`Processing ${packagePath}`);
 	  var command = 'gulp';
 		let gulpFile = pathUtil.join(packagePath, "gulpfile.js");
 	  var args = ['--gulpfile=' + gulpFile].concat(tasks);
@@ -92,7 +97,7 @@ async function watchProject(path) {
 			cwd: packagePath,
 	    env: process.env,
 	    stdio: 'inherit',
-			std: 'inherit'
+			stderr: 'inherit'
 	  }
 
 	  if (isWin) {
@@ -124,8 +129,8 @@ function isDirectory(fileName) {
     return fs.lstatSync(filePath).isDirectory();
 }
 
-export async function watchProjects() {
+export async function watchProjects(reload) {
 		gutil.log("Watching local dependencies")
 		let files = await asp(fs.readdir)(dependencyPath);
-		await Promise.all(files.filter(isDirectory).map(watchProject));
+		await Promise.all(files.filter(isDirectory).map(p => watchProject(p, reload)));
 }

@@ -67,15 +67,14 @@ async function watchProject(path, reload) {
 		.watch(`${projectPath}/**/*`, {persistent: true, awaitWriteFinish: true, ignoreInitial: true})
 		.on('all', async (event, path) =>
 			{
-				gutil.log("Dependent packages changed. Updating dependencies.");
-				await jspmLocal.updateLocalDependencies([packageName]);
 				try {
-				gutil.log(gutil.colors.yellow("Reloading browser..."))
-				reload();
-				gutil.log(gutil.colors.yellow("Reloading browser finished..."))
-			}catch (e) {
-				gutil.log(e);
-			}
+					gutil.log("Dependent pacakge ", gutil.colors.yellow(packageName), "changed. Updating dependencies.");
+					await jspmLocal.updateLocalDependencies([packageName]);
+					gutil.log(gutil.colors.yellow("Reloading browser..."))
+					reload();
+				} catch (e) {
+					gutil.log(e);
+				}
 			});
 	}
 

@@ -1,15 +1,15 @@
 {
   "name": "gulp-overwatch",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "description": "Gulp task for automating the update your local dependencies installed by jspm-local endpoint ",
   "main": "dist/index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
-	   "type": "git",
-	   "url": "https://github.com/Netatwork-de/gulp-overwatch.git"
- },
+    "type": "git",
+    "url": "https://github.com/Netatwork-de/gulp-overwatch.git"
+  },
   "author": "Henning Krause",
   "license": "Apache-2.0",
   "directories": {
@@ -32,6 +32,7 @@
   "dependencies": {
     "chokidar": "^1.4.2",
     "graceful-fs": "^4.1.2",
+    "gulp-jspm-local": "^1.0.4",
     "gulp-util": "^3.0.7",
     "path": "^0.12.7",
     "rsvp": "^3.1.0"
